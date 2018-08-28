@@ -23,16 +23,29 @@ exports.signin = function(req,res){
 };
 
 exports.signup = function(req, res, next){
-  db.User.create(req.body).then(function(user){
-    var token = jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
-    res.status(200).json({userId: user.id,
-                          username: user.username,
-                          profileImageUrl: user.profileImageUrl,
-                          token
-                        });
-  }).catch(function(err) {
-    res.status(400).json(err);
+  console.log("something happening?")
+  db.Phonenumber.create({numberr: req.body.phoneNumber}).then((phone) => { 
+        db.User.create({
+      email: req.body.email,
+      password: req.body.password,
+      username: req.body.username,
+      phoneDetails: phone
+    }).then(function(user){
+      var token = jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
+      res.status(200).json({userId: user.id,
+        username: user.username,
+        profileImageUrl: user.profileImageUrl,
+        token
+      });
+    }).catch(function(err) {
+      res.status(400).json(err);
+    });
   });
+
+
+
+  // });
+
 };
 
 

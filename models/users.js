@@ -17,9 +17,9 @@ var userSchema = new mongoose.Schema({
     profileImageUrl: {
       type:String,
     },
-    phoneNumber: {
-      type: String,
-      required: true
+    phoneDetails: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Phonenumber"
     },
     phoneVerified: {
       type: Boolean,
