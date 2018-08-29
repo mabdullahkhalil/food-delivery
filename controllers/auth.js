@@ -4,8 +4,10 @@ var jwt = require('jsonwebtoken');
 
 
 exports.signin = function(req,res){
-
+  console.log("showing stuff")
+  console.log(req)
   db.User.findOne({email: req.query.email}).then(function(user){
+    console.log(user.phoneDetails)
     if (user.phoneDetails.isVerified){
       user.comparePassword(req.query.password, function(err, isMatch){
         if(isMatch){
