@@ -14,8 +14,8 @@ var routes = require('./routes/authRoutes'); //importing route
 app.use('/api/',routes)
 
 
-const PORT = 8081
+// const PORT = 8081
 
-app.listen(PORT, function(){
-  console.log(`Server is listening on port ${PORT}`);
+app.listen(process.env.PORT || 5000, function(){
+  console.log(`Server iis listening`);
 });
