@@ -7,7 +7,7 @@ exports.signin = function(req,res){
   console.log("showing stuff")
   console.log(req)
   db.User.findOne({email: req.body.email}).then(function(user){
-    console.log(user.phoneDetails)
+    console.log(user.phoneDetails.isVerified)
     if (user.phoneDetails.isVerified){
       user.comparePassword(req.body.password, function(err, isMatch){
         if(isMatch){
