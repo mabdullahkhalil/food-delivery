@@ -1,8 +1,8 @@
 var mongoose = require("mongoose");
 mongoose.set('debug', true);
 mongoose.Promise = global.Promise;
-console.log("showing",process.env.DATABASE_URI )
-mongoose.connect(process.env.DATABASE_URI, {
+console.log("showing",process.env.DATABASE_URII )
+mongoose.connect(process.env.DATABASE_URII, {
   keepAlive: true,
   reconnectTries: Number.MAX_VALUE,
   useNewUrlParser: true

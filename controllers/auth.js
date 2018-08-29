@@ -4,8 +4,10 @@ var jwt = require('jsonwebtoken');
 
 
 exports.signin = function(req,res){
-  db.User.findOne({email: req.body.email}).then(function(user){
-    user.comparePassword(req.body.password, function(err, isMatch){
+  console.log(req.query)
+  console.log(req.body)
+  db.User.findOne({email: req.query.email}).then(function(user){
+    user.comparePassword(req.query.password, function(err, isMatch){
       if(isMatch){
         var token = jwt.sign({userId: user.id}, process.env.SECRET_KEY);
         res.status(200).json({userId: user.id,
@@ -24,11 +26,11 @@ exports.signin = function(req,res){
 
 exports.signup = function(req, res, next){
   console.log("something happening?")
-  db.Phonenumber.create({numberr: req.body.phoneNumber}).then((phone) => { 
+  db.Phonenumber.create({numberr: req.query.phoneNumber}).then((phone) => { 
         db.User.create({
-      email: req.body.email,
-      password: req.body.password,
-      username: req.body.username,
+      email: req.query.email,
+      password: req.query.password,
+      username: req.query.username,
       phoneDetails: phone
     }).then(function(user){
       var token = jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
