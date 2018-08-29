@@ -5,9 +5,9 @@ var jwt = require('jsonwebtoken');
 
 exports.signin = function(req,res){
   console.log("showing stuff")
-  console.log(req)
-  db.User.findOne({email: req.body.email}).then(function(user){
-    console.log(user.phoneDetails.isVerified)
+  // console.log(req)
+  db.User.findOne({email: req.body.email}).populate("phoneDetails").then(function(user){
+    console.log("showing", user.phoneDetails)
     if (user.phoneDetails.isVerified){
       user.comparePassword(req.body.password, function(err, isMatch){
         if(isMatch){
@@ -24,8 +24,13 @@ exports.signin = function(req,res){
     }else{
       res.status(200).json({message: 'your phone is not verified yet'})
     }
+
+
+
+
+
   }).catch(function(err){
-    res.status(400).json({message: 'Invalid Email/Password'})
+    res.status(400).json({message: 'User doesnot exist'})
   })
 };
 
