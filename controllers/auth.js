@@ -22,7 +22,7 @@ exports.signin = function(req,res){
         }
       })
     }else{
-      res.status(400).json({message: 'your phone is not verified yet'})
+      res.status(200).json({message: 'your phone is not verified yet'})
     }
   }).catch(function(err){
     res.status(400).json({message: 'Invalid Email/Password'})
