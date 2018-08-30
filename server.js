@@ -24,8 +24,21 @@ passport.use(new FacebookTokenStrategy({
   return done(null, user); // the user object we just made gets passed to the route's controller as `req.user`
 
 }));
+// used to serialize the user for the session
+passport.serializeUser(function(user, done) {
+    done(null, user.id); 
+   // where is this user.id going? Are we supposed to access this anywhere?
+});
+
+// used to deserialize the user
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });
+});
 
 app.use(passport.initialize());
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -44,7 +57,7 @@ app.get('/auth/facebook/token',
   	console.log("trying to authenticate facebook")
   	console.log(req.user)
     // do something with req.user
-    res.send(req.user? 200 : 401);
+    res.status(200).json({user: req.user})
   }
 );
 
