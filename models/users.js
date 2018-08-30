@@ -12,7 +12,7 @@ var userSchema = new mongoose.Schema({
     },
     password: {
       type: String,
-      required: true
+      // required: true
     },
     profileImageUrl: {
       type:String,
@@ -21,11 +21,17 @@ var userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "Phonenumber"
     },
-    phoneVerified: {
-      type: Boolean,
-      default: false
+   facebook: {
+    id: {
+      type:String,
+      default: null
+    },
+    token: {
+      type:String,
+      default: null
     }
-});
+   }
+}, { timestamps: true });
 
 userSchema.pre('save', function(next){
   var user = this;
