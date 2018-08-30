@@ -29,7 +29,7 @@ var routes = require('./routes/authRoutes'); //importing route
 
 app.use('/api/',routes)
 
-app.post('/auth/facebook/token',
+app.get('/auth/facebook/token',
   passport.authenticate('facebook-token'),
   function (req, res) {
   	console.log("trying to authenticate facebook")
