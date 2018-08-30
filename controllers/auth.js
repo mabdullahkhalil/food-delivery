@@ -50,8 +50,13 @@ exports.signup = function(req, res, next){
   }).catch((err) => {
           res.status(400).json(err);
   });
-
 };
+
+exports.facebook_signin = (req,res) => {
+      console.log("trying to authenticate facebook")
+    console.log(req.user)
+    res.status(200).json({user: req.user})
+}
 
 
 module.exports = exports
