@@ -7,14 +7,32 @@ var passport = require("passport")
 var FacebookTokenStrategy = require('passport-facebook-token');
 
 passport.use(new FacebookTokenStrategy({
-    clientID: "515902558881080",
-    clientSecret: "9cf7a42a9fb07e849c29f503f76a6c40"
+
   }, function(accessToken, refreshToken, profile, done) {
     User.findOrCreate({facebookId: profile.id}, function (error, user) {
       return done(error, user);
     });
   }
 ));
+
+passport.use(new FacebookTokenStrategy({
+    clientID: '515902558881080',
+    clientSecret: '9cf7a42a9fb07e849c29f503f76a6c40'
+}, function (accessToken, refreshToken, profile, done) {
+  let user = {
+    'email': profile.emails[0].value,
+    'name': profile.name.givenName + ' ' + profile.name.familyName,
+    'id': profile.id,
+    'token': accessToken
+  };
+
+  // You can perform any necessary actions with your user at this point,
+  // e.g. internal verification against a users table,
+  // creating new user entries, etc.
+
+  return done(null, user); // the user object we just made gets passed to the route's controller as `req.user`
+
+}));
 
 app.use(passport.initialize());
 app.use(cors());
