@@ -6,14 +6,6 @@ var bodyParser = require("body-parser");
 var passport = require("passport")
 var FacebookTokenStrategy = require('passport-facebook-token');
 
-
-
-app.use(passport.initialize());
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
-
-
 passport.use(new FacebookTokenStrategy({
     clientID: "515902558881080",
     clientSecret: "9cf7a42a9fb07e849c29f503f76a6c40"
@@ -23,6 +15,14 @@ passport.use(new FacebookTokenStrategy({
     });
   }
 ));
+
+app.use(passport.initialize());
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+
+
+
 
 var routes = require('./routes/authRoutes'); //importing route
 // routes(app);
