@@ -7,15 +7,6 @@ var passport = require("passport")
 var FacebookTokenStrategy = require('passport-facebook-token');
 
 passport.use(new FacebookTokenStrategy({
-
-  }, function(accessToken, refreshToken, profile, done) {
-    User.findOrCreate({facebookId: profile.id}, function (error, user) {
-      return done(error, user);
-    });
-  }
-));
-
-passport.use(new FacebookTokenStrategy({
     clientID: '515902558881080',
     clientSecret: '9cf7a42a9fb07e849c29f503f76a6c40'
 }, function (accessToken, refreshToken, profile, done) {
