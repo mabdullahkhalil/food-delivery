@@ -10,7 +10,7 @@ var passport = require("passport")
 
 setInterval(function() {
     http.get("http://backend-foodddelivery.herokuapp.com");
-}, 300000);
+}, 3000);
 
 
 

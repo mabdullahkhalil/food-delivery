@@ -44,5 +44,7 @@ passport.use(new FacebookTokenStrategy({
 router.post('/signin', authenticationHelper.signin);
 router.post('/signup', authenticationHelper.signup);
 router.get('/auth/facebook/token', passport.authenticate('facebook-token'), authenticationHelper.facebook_signin)
+router.post('/facebook_phone_adding', authenticationHelper.facebook_phone_adding)
+
 
 module.exports = router;
