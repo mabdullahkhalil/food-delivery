@@ -59,14 +59,34 @@ exports.facebook_signin = (req,res) => {
     res.status(200).json({user: req.user, authtoken: token})
 }
 
-exports.facebook_phone_adding = async(req,res,cb) => {
+exports.facebook_phone_adding = async(req,res) => {
   var token = req.headers.token
   try {
     var userid = await jwtdecode(token)
     let phone = await db.Phonenumber.create({numberr: req.body.phoneNumber});
     let user =  await db.User.updateOne({ "_id": mongoose.Types.ObjectId(userid)}, { $set: {phoneDetails: phone} });
     res.status(200).json({message: "phone added"})
-    return
+  } catch(err) {
+    console.log(err)
+    res.status(401).json({message: err.errmsg})
+  }
+}
+
+exports.verify_phone = async(req,res) => {
+  var token= req.headers.token
+   try {
+    var userid = await jwtdecode(token)
+    let user = await db.User.findOne({"_id": mongoose.Types.ObjectId(userid)}).populate("phoneDetails")
+    console.log(user)
+    if (user.phoneDetails.verificationCode == req.body.verificationCode){
+      user.phoneDetails.isVerified = true;
+      user.phoneDetails.save( err => {
+        if (err) throw err
+        res.status(200).json({message: "phone registered successfully"})
+      });
+
+      console.log(user)
+    }
   } catch(err) {
     console.log(err)
     res.status(401).json({message: err.errmsg})
@@ -77,7 +97,8 @@ exports.facebook_phone_adding = async(req,res,cb) => {
 async function jwtdecode(token){
   let err,decoded = jwt.verify(token,process.env.SECRET_KEY);
   if (err) {
-    return null
+    console.log(err)
+    return err
   } 
   return decoded.userId
 }
