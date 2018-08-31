@@ -59,28 +59,29 @@ exports.facebook_signin = (req,res) => {
     res.status(200).json({user: req.user, authtoken: token})
 }
 
-exports.facebook_phone_adding = (req,res) => {
+exports.facebook_phone_adding = async(req,res,cb) => {
   var token = req.headers.token
-  jwt.verify(token, process.env.SECRET_KEY, function(err, decoded) {
-    if(decoded){
-      db.Phonenumber.create({numberr: req.body.phoneNumber}).then(phone => {
-        db.User.updateOne({ "_id": mongoose.Types.ObjectId(decoded.userId)}, { $set: {phoneDetails: phone} }, (err, res) =>{
-          if (err) throw err;
-
-        }).then(user => {
-          res.status(200).json({message: "Phone Number added"})
-        }).catch(err => {
-          res.status(401).json({message: "Phone Number not  added"})
-        });
-      }).catch(err => {
-        res.status(401).json({message: "Phone Number already exists"})
-      });
-    } else {
-      res.status(400).json({message: 'Please log in first'})
-    }
-  });
-
+  try {
+    var userid = await jwtdecode(token)
+    let phone = await db.Phonenumber.create({numberr: req.body.phoneNumber});
+    let user =  await db.User.updateOne({ "_id": mongoose.Types.ObjectId(userid)}, { $set: {phoneDetails: phone} });
+    res.status(200).json({message: "phone added"})
+    return
+  } catch(err) {
+    console.log(err)
+    res.status(401).json({message: err.errmsg})
+  }
 }
+
+
+async function jwtdecode(token){
+  let err,decoded = jwt.verify(token,process.env.SECRET_KEY);
+  if (err) {
+    return null
+  } 
+  return decoded.userId
+}
+
 
 
 module.exports = exports
