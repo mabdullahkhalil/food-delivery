@@ -4,10 +4,12 @@ var PhonenumberSchema = new mongoose.Schema({
 	numberr: {
 		type: String,
 		required: true,
-		unique: true
+		unique: true,
+		default: null
 	},
 	verificationCode: {
-		type: Number
+		type: Number,
+		default: null
 	},
 	isVerified: {
 		type: Boolean,

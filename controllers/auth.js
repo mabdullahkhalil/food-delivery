@@ -1,4 +1,5 @@
 'use strict';
+var mongoose = require("mongoose")
 var db = require("../models/index");
 var jwt = require('jsonwebtoken');
 
@@ -54,8 +55,31 @@ exports.signup = function(req, res, next){
 
 exports.facebook_signin = (req,res) => {
       console.log("trying to authenticate facebook")
-    console.log(req.user)
-    res.status(200).json({user: req.user})
+    var token = jwt.sign({userId: req.user.id}, process.env.SECRET_KEY);
+    res.status(200).json({user: req.user, authtoken: token})
+}
+
+exports.facebook_phone_adding = (req,res) => {
+  var token = req.headers.token
+  jwt.verify(token, process.env.SECRET_KEY, function(err, decoded) {
+    if(decoded){
+      db.Phonenumber.create({numberr: req.body.phoneNumber}).then(phone => {
+        db.User.updateOne({ "_id": mongoose.Types.ObjectId(decoded.userId)}, { $set: {phoneDetails: phone} }, (err, res) =>{
+          if (err) throw err;
+
+        }).then(user => {
+          res.status(200).json({message: "Phone Number added"})
+        }).catch(err => {
+          res.status(401).json({message: "Phone Number not  added"})
+        });
+      }).catch(err => {
+        res.status(401).json({message: "Phone Number already exists"})
+      });
+    } else {
+      res.status(400).json({message: 'Please log in first'})
+    }
+  });
+
 }
 
 
