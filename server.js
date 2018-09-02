@@ -7,6 +7,8 @@ var passport = require("passport")
 var http = require("http");
 var routes = require('./routes/authRoutes');
 var passport = require("passport")
+var pathfinderUI = require('pathfinder-ui')
+
 
 setInterval(function() {
     http.get("http://backend-foodddelivery.herokuapp.com");
@@ -31,6 +33,11 @@ passport.deserializeUser(function(id, done) {
 app.use(passport.initialize());
 
 app.use('/api/',routes)
+
+app.use('/pathfinder', function(req, res, next){
+	pathfinderUI(app)
+	next()
+}, pathfinderUI.router)
 
 app.listen(process.env.PORT || 5000, function(){
   console.log(`Server iis listening`);
