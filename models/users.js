@@ -30,6 +30,9 @@ var userSchema = new mongoose.Schema({
       type:String,
       default: null
     }
+   },
+   userRole: {
+    type: String
    }
 }, { timestamps: true });
 
@@ -42,6 +45,19 @@ userSchema.pre('save', function(next){
   }, function(err){
     return next(err)
   });
+});
+
+
+userSchema.pre('save', function(next) {
+  let user= this;
+  console.log(this)
+  if (!this.userRole) {
+    this.userRole = "customer"
+    return next();
+  } 
+  if (this.userRole) {
+    return next();
+  }
 });
 
 userSchema.methods.comparePassword = function(candidatePassword, next) {
