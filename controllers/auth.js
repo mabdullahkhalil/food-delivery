@@ -37,7 +37,8 @@ exports.signup = function(req, res, next){
       email: req.body.email,
       password: req.body.password,
       username: req.body.username,
-      phoneDetails: phone
+      phoneDetails: phone,
+      userRole: req.body.userRole
     }).then(function(user){
       var token = jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
       res.status(200).json({userId: user.id,
