@@ -21,3 +21,4 @@ mongoose.connect(process.env.DATABASE_URI, {
 
 module.exports.User = require("./users");
 module.exports.Phonenumber = require("./phonenumbers");
+module.exports.Meal= require("./meals")

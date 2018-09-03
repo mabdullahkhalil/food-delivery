@@ -6,6 +6,7 @@ var bodyParser = require("body-parser");
 var passport = require("passport")
 var http = require("http");
 var routes = require('./routes/authRoutes');
+var mealRoutes = require('./routes/mealRoutes');
 var passport = require("passport")
 
 setInterval(function() {
@@ -31,6 +32,7 @@ passport.deserializeUser(function(id, done) {
 app.use(passport.initialize());
 
 app.use('/api/',routes)
+app.use('/api/',mealRoutes)
 
 app.listen(process.env.PORT || 5000, function(){
   console.log(`Server iis listening`);
