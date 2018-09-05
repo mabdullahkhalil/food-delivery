@@ -14,19 +14,6 @@ exports.createMeal= (req,res) => {
 		price: req.body.price,
 		options: req.body.options
 	}).then(meal => {
-		if (req.body.options) {
-			// meal.options.push(req.body.options);
-
-			// req.body.options.forEach(option => {
-			// 	meal.options.push(option);
-			// })
-			// meal.save( err => {
-			// 	if (err){
-			// 		res.status(400).json({message: "Meal not added"});
-			// 		return;
-			// 	} 
-			// });
-		}
 		res.status(200).json({message: "Meal added successfully"});
 		return;
 
@@ -37,7 +24,22 @@ exports.createMeal= (req,res) => {
 	});
 }
 
+exports.showMeal= async(req,res) => {
+	console.log("checkcheck")
+	try{
+		var meals = await db.Meal.find({isDeleted: false})
+			console.log("checkcheck11")
 
+		res.status(200).json({meals: meals})
+		console.log(res)
+	} catch(err){
+   		 res.status(400).json({message: err.errmsg})
+	}
+
+
+
+
+}
 
 
 module.exports = exports
