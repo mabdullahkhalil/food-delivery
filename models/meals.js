@@ -31,6 +31,10 @@ var mealSchema = new mongoose.Schema({
 	price: {
 		type: Number,
 		required: true
+	},
+	isDeleted:{
+		type: Boolean,
+		default: false
 	}
 });
 
