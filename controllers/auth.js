@@ -2,6 +2,10 @@
 var mongoose = require("mongoose")
 var db = require("../models/index");
 var jwt = require('jsonwebtoken');
+var client = require('twilio')(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
 
 exports.signin = function(req,res){
@@ -39,8 +43,9 @@ exports.signup = function(req, res, next){
       username: req.body.username,
       phoneDetails: phone,
       userRole: req.body.userRole
-    }).then(function(user){
-      var token = jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
+    }).then(async function(user){
+      var token = await jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
+      var message = await sendMessage(req.body.phoneNumber, "your Verification code is"+phone.verificationCode)
       res.status(200).json({userId: user.id,
         username: user.username,
         profileImageUrl: user.profileImageUrl,
@@ -104,6 +109,17 @@ async function jwtdecode(token){
   return decoded.userId
 }
 
+
+async function sendMessage(send_to,message_text){
+  try {
+    let message = await client.messages.create({from: process.env.TWILIO_PHONE_NUMBER,to: send_to, body: message_text});
+    return message
+  } catch(err) {
+    console.log("error",err)
+    return err
+  }
+
+}
 
 
 module.exports = exports
