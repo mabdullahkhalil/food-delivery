@@ -59,10 +59,15 @@ exports.signup = function(req, res, next){
   });
 };
 
-exports.facebook_signin = (req,res) => {
+exports.facebook_signin = async (req,res) => {
       console.log("trying to authenticate facebook")
-    var token = jwt.sign({userId: req.user.id}, process.env.SECRET_KEY);
-    res.status(200).json({user: req.user, authtoken: token})
+    var token = await jwt.sign({userId: req.user.id}, process.env.SECRET_KEY);
+    if (req.user.phoneDetails) {
+      let phone = await db.Phonenumber.findOne({_id: req.user.phoneDetails})
+      res.status(200).json({authtoken: token, phoneDetails: phone.isVerified})
+    } else {
+      res.status(200).json({authtoken: token, phoneDetails: null})
+    }
 }
 
 exports.facebook_phone_adding = async(req,res) => {
