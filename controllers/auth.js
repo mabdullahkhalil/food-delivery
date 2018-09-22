@@ -27,7 +27,11 @@ exports.signin = function(req,res){
         }
       })
     }else{
-      res.status(200).json({message: 'your phone is not verified yet'})
+      var token = jwt.sign({userId: user.id}, process.env.SECRET_KEY);
+      db.Phonenumber.updateOne({ "numberr": user.phoneDetails.numberr}, { $set: {verificationCode: Math.floor(Math.random() * 99999) + 100000}}).then(phone => {
+        res.status(200).json({message: 'your phone is not verified yet', token: token})
+      })
+      
     }
   }).catch(function(err){
     res.status(400).json({message: 'User doesnot exist'})
