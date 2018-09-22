@@ -97,6 +97,9 @@ exports.verify_phone = async(req,res) => {
       });
 
       console.log(user)
+    } else {
+      res.status(401).json({message: err.errmsg})
+
     }
   } catch(err) {
     console.log(err)
