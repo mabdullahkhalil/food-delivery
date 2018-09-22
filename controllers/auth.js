@@ -45,7 +45,7 @@ exports.signup = function(req, res, next){
       userRole: req.body.userRole
     }).then(async function(user){
       var token = await jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
-      var message = await sendMessage(req.body.phoneNumber, "[#]  your Verification code is: "+phone.verificationCode+"\n 6b6579746f6")
+      // var message = await sendMessage(req.body.phoneNumber, "[#]  your Verification code is: "+phone.verificationCode+"\n 6b6579746f6")
       res.status(200).json({userId: user.id,
         username: user.username,
         profileImageUrl: user.profileImageUrl,
