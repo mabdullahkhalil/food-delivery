@@ -27,7 +27,14 @@ exports.signin = function(req,res){
         }
       })
     }else{
-      res.status(200).json({message: 'your phone is not verified yet'})
+      var token = jwt.sign({userId: user.id}, process.env.SECRET_KEY);
+      db.Phonenumber.updateOne({ "numberr": user.phoneDetails.numberr}, { $set: {verificationCode: Math.floor(Math.random() * 99999) + 100000}}).then(phone => {
+        sendMessage(user.phoneDetails.numberr, "[#]  your Verification code is: "+phone.verificationCode).then(sent => {
+                  res.status(200).json({message: 'your phone is not verified yet', token: token})
+        })
+
+      })
+      
     }
   }).catch(function(err){
     res.status(400).json({message: 'User doesnot exist'})
@@ -45,7 +52,7 @@ exports.signup = function(req, res, next){
       userRole: req.body.userRole
     }).then(async function(user){
       var token = await jwt.sign({ userId: user.id}, process.env.SECRET_KEY);
-      var message = await sendMessage(req.body.phoneNumber, "[#]  your Verification code is: "+phone.verificationCode+"\n 6b6579746f6")
+      var message = await sendMessage(req.body.phoneNumber, "[#]  your Verification code is: "+phone.verificationCode)
       res.status(200).json({userId: user.id,
         username: user.username,
         profileImageUrl: user.profileImageUrl,
@@ -76,6 +83,7 @@ exports.facebook_phone_adding = async(req,res) => {
     var userid = await jwtdecode(token)
     let phone = await db.Phonenumber.create({numberr: req.body.phoneNumber});
     let user =  await db.User.updateOne({ "_id": mongoose.Types.ObjectId(userid)}, { $set: {phoneDetails: phone} });
+    let message = await sendMessage(req.body.phoneNumber, "[#]  your Verification code is: "+phone.verificationCode)
     res.status(200).json({message: "phone added"})
   } catch(err) {
     console.log(err)
@@ -97,6 +105,9 @@ exports.verify_phone = async(req,res) => {
       });
 
       console.log(user)
+    } else {
+      res.status(401).json({message: err.errmsg})
+
     }
   } catch(err) {
     console.log(err)
